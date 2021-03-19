@@ -10,7 +10,15 @@
 //     host+=":80";
 // }
 
-host="ws://localhost:80"
+var host="";
+if(document.URL.indexOf("localhost")!=-1)
+{
+    host="ws://localhost:80"; 
+}
+else
+{
+    host="ws://azureappservice360.azurewebsites.net:80";
+}
 
 var connection = new WebSocket(host);
 connection.onopen = function () {
