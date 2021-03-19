@@ -2,6 +2,9 @@ var express=require('express');
 var app=express();
 var path    = require("path");
 
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ "port": 80 });
+
 //app.use(express.static('public'));
 
 
@@ -15,8 +18,6 @@ app.listen(port);
 
 
 
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ "port": 80 });
 // // สร้าง websockets server ที่ port 80
 // wss.on('connection', function connection(ws) { // สร้าง connection
 
