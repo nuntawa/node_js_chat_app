@@ -1,43 +1,18 @@
-var express=require('express');
-var app=express();
-var path    = require("path");
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
 
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ "port": 80 });
-
-//app.use(express.static('public'));
-
-
-app.get("/",(req, res)=>{
-    res.sendFile(path.join(__dirname+'/public/index.html'));
-    //res.send("Hello");
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
 });
 
-var port=process.env.PORT || 5000;
-app.listen(port);
+io.on('connection', (socket) => {
+  socket.on('chat message', msg => {
+    io.emit('chat message', msg);
+  });
+});
 
-
-
-// // สร้าง websockets server ที่ port 80
-// wss.on('connection', function connection(ws) { // สร้าง connection
-
-//     ws.on('message', function incoming(message) {
-//     // รอรับ data อะไรก็ตาม ที่มาจาก client แบบตลอดเวลา
-//         console.log('received: %s', message);
-//     });
-//     ws.on('close', function close() {
-//     // จะทำงานเมื่อปิด Connection ในตัวอย่างคือ ปิด Browser
-//         console.log('disconnected');
-//     });
-//     ws.send('init message to client');
-//     // ส่ง data ไปที่ client เชื่อมกับ websocket server นี้
-//     setInterval(() => {
-//         const data = {
-//             posX: Math.floor((Math.random() * 800) + 1),
-//             posY: Math.floor((Math.random() * 600) + 1)
-//         }
-//             console.log('sending to data to client:', data)
-//             ws.send(JSON.stringify(data))
-//     }, 1000)
-
-// });
+http.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
+});
