@@ -1,7 +1,7 @@
 {
-  "name": "socket-chat-example",
+  "name": "vue_socket",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "vue socket",
   "main":"index.js",
   "dependencies": {
     "express": "^4.17.1",
