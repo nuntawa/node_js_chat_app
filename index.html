@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta  charset="utf-8" />
+    <title>Socket.IO chat</title>
+  </head>
+  <body>
+    <!-- <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form> -->
+     
+
+    <div class="container">
+        <br />
+        <br />
+        <br />
+          <div id="app">
+
+            <div class="list-group" v-if="role==''">
+                <label>ผู้ใช้</label>
+                <select v-model="role" class="form-control form-control-sm" >
+                  <option value=""></option>
+                  <option value="driver">คนขับ</option>
+                  <option value="user">ผู้โดยสาร</option>
+                </select>
+            </div>
+
+              <div  v-if="role=='driver'">
+
+                  <h4>คนขับ</h4>
+                  <hr />
+                  <li v-for="item in socket_user">
+                    {{ item }}
+                  </li>
+
+                  <button class="btn  btn-sm btn-primary " v-on:click="driver_send"  type="button">แจ้งถึงแล้ว</button>
+                
+              </div>
+
+              <div  v-if="role=='user'">
+
+                  <h4>ผู้โดยสาร</h4>
+                  <hr />
+                  <li v-for="item in socket_driver">
+                    {{ item }}
+                  </li>
+
+                  <button class="btn  btn-sm btn-primary " v-on:click="user_send" type="button">ขึ้นรถแล้ว</button>
+                
+              </div>
+              
+      
+      
+          </div>
+    </div>
+    
+
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <script>
+      var app = new Vue({
+          el: '#app',
+
+          data: {
+            role: "",
+            socket_driver:[],
+            socket_user:[],
+          },
+          created:()=>{
+            //alert("");
+            // socket.on('send_data', (obj)=> {
+
+            //   console.log(obj)
+            //   if(obj.role=="คนขับ")
+            //   {
+            //       app.socket_driver.push({socket_data:JSON.stringify(obj)});
+            //       app.socket_user.push({socket_data:JSON.stringify(obj)});
+            //   }
+            //   else
+            //   {
+            //       app.socket_user.push({socket_data:JSON.stringify(obj)});
+            //       app.socket_driver.push({socket_data:JSON.stringify(obj)});
+            //   }
+
+            //   // var item = document.createElement('li');
+            //   // item.textContent = msg.message;
+            //   // messages.appendChild(item);
+            //   // window.scrollTo(0, document.body.scrollHeight);
+            //   }); 
+
+          },
+          methods: {
+
+            driver_send:()=>{
+              var json = {
+                role:"คนขับ",
+                action:"แจ้งว่าถึงแล้ว"
+              };
+              socket.emit('send_data',json);
+
+             
+            },
+
+            user_send:()=>{
+              var json = {
+                role:"ผู้โดยสาร",
+                action:"ขึ้นรถแล้ว"
+              };
+              socket.emit('send_data',json);
+
+              
+
+            },  
+
+            add_socket_driver:(item)=>{
+              app.socket_driver.push(item);
+            },
+            add_socket_user:(item)=>{
+              app.socket_user.push(item);
+
+            },
+
+          }
+
+        });
+    
+      
+      let host="http://localhost:3000";
+      if(document.URL.indexOf("azureappservice360.")!=-1)
+      {
+          host="https://azureappservice360.azurewebsites.net/";
+      }
+
+      host="https://azureappservice360.azurewebsites.net/";
+
+        var socket = io(host);
+        //var socket = io();
+
+        // var messages = document.getElementById('messages');
+        // var form = document.getElementById('form');
+        // var input = document.getElementById('input');
+
+
+        // form.addEventListener('submit', function(e) {
+        //   e.preventDefault();
+        //   if (input.value) {
+
+        //       var json = {
+        //           message: input.value
+        //       };
+        //       socket.emit('send_data',json);
+        //       input.value = '';
+
+        //   }
+        // });
+
+
+        socket.on('send_data', function(obj) {
+
+          // console.log(obj);
+          // console.log(app);
+          if(obj.role=="คนขับ")
+          {
+              //app.socket_driver.push({socket_data:JSON.stringify(obj)});
+              app.add_socket_driver(JSON.stringify(obj));
+              
+              app.add_socket_user(JSON.stringify(obj));
+
+          }
+          else
+          {
+            app.add_socket_user(JSON.stringify(obj));
+            
+            app.add_socket_driver(JSON.stringify(obj));
+
+
+              //app.socket_user.push({socket_data:JSON.stringify(obj)});
+          }
+
+          // var item = document.createElement('li');
+          // item.textContent = msg.message;
+          // messages.appendChild(item);
+          // window.scrollTo(0, document.body.scrollHeight);
+        }); 
+
+      
+    </script>
+  </body>
+</html>
