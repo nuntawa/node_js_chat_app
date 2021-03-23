@@ -135,6 +135,7 @@
           host="https://azureappservice360.azurewebsites.net/";
       }
 
+      host="https://azureappservice360.azurewebsites.net/";
 
         var socket = io(host);
         //var socket = io();
@@ -166,13 +167,15 @@
           {
               //app.socket_driver.push({socket_data:JSON.stringify(obj)});
               app.add_socket_driver(JSON.stringify(obj));
-              //app.add_socket_user(JSON.stringify(obj));
+              
+              app.add_socket_user(JSON.stringify(obj));
 
           }
           else
           {
             app.add_socket_user(JSON.stringify(obj));
-            //app.add_socket_driver(JSON.stringify(obj));
+            
+            app.add_socket_driver(JSON.stringify(obj));
 
 
               //app.socket_user.push({socket_data:JSON.stringify(obj)});
